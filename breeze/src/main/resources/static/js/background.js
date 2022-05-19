@@ -1,0 +1,7 @@
+$(function () {
+    (function () {
+        const background = $("body").data("background");
+        $("body").css('background-image', "url(/file/background/11/9/" + background + "/download)");
+        console.log("                     //\n         \\\\         //\n          \\\\       //\n    ##DDDDDDDDDDDDDDDDDDDDDD##\n    ## DDDDDDDDDDDDDDDDDDDD ##   ________   ___   ___        ___   ________   ___   ___        ___\n    ## hh                hh ##   |\\   __  \\ |\\  \\ |\\  \\      |\\  \\ |\\   __  \\ |\\  \\ |\\  \\      |\\  \\\n    ## hh    //    \\\\    hh ##   \\ \\  \\|\\ /_\\ \\  \\\\ \\  \\     \\ \\  \\\\ \\  \\|\\ /_\\ \\  \\\\ \\  \\     \\ \\  \\\n    ## hh   //      \\\\   hh ##    \\ \\   __  \\\\ \\  \\\\ \\  \\     \\ \\  \\\\ \\   __  \\\\ \\  \\\\ \\  \\     \\ \\  \\\n    ## hh                hh ##     \\ \\  \\|\\  \\\\ \\  \\\\ \\  \\____ \\ \\  \\\\ \\  \\|\\  \\\\ \\  \\\\ \\  \\____ \\ \\  \\\n    ## hh      wwww      hh ##      \\ \\_______\\\\ \\__\\\\ \\_______\\\\ \\__\\\\ \\_______\\\\ \\__\\\\ \\_______\\\\ \\__\\\n    ## hh                hh ##       \\|_______| \\|__| \\|_______| \\|__| \\|_______| \\|__| \\|_______| \\|__|\n    ## MMMMMMMMMMMMMMMMMMMM ##\n    ##MMMMMMMMMMMMMMMMMMMMMM##                             www.bilibili.com/video/BV1ZF411j7Ch/\n         \\/            \\/");
+    })();
+})

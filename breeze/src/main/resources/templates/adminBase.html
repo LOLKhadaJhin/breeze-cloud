@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>微风网盘</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" src="/static/js/jquery-3.6.0.min.js"></script>
+    <link type="text/css" href="/static/bootstrap5/css/bootstrap.min.css" rel="stylesheet">
+    <script type="text/javascript" src="/static/bootstrap5/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="/static/js/background.js"></script>
+    <style>
+        body {
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-position: center center;
+        }
+
+        h4 {
+            line-height: 3.5rem;
+            height: 3.5rem;
+            text-align: center;
+            color: white;
+            background-color: rgba(24, 131, 81, 0.6);
+            margin-bottom: 0;
+        }
+
+        h4 a {
+            text-decoration: none;
+            color: white;
+        }
+
+        h3 {
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+
+        tbody tr th {
+            line-height: 38px;
+        }
+
+        table {
+            text-align: center;
+            max-width: 800px;
+            margin: auto;
+        }
+
+        .column-6 {
+            width: 10%;
+        }
+
+        .column-20 {
+            width: 10%;
+        }
+
+        td button.btn-light {
+            min-width: 60%;
+            pointer-events: none;
+            filter: opacity(0.7);
+        }
+
+        .background li {
+            float: left;
+            width: 32%;
+            height: 72px;
+            list-style-type: none;
+            margin-bottom: 4%;
+        }
+
+        .background li:nth-of-type(3n+2) {
+            margin-left: 2%;
+            margin-right: 2%;
+        }
+
+        img {
+            width: 100%;
+        }
+    </style>
+
+</head>
+<body th:data-background="${background}">
+<h4>
+    <a th:href="@{/}">微风网盘</a>
+</h4>
+
+<div>
+    <h3>
+        基础配置
+    </h3>
+    <table class="table">
+        <thead>
+        <tr>
+            <th class="column-6 text-nowrap" scope="col">序号</th>
+            <th class="column-40" scope="col">配置名称</th>
+            <th class="column-20 text-nowrap" scope="col">操作</th>
+        </tr>
+        </thead>
+        <tbody th:if="${base}">
+        <tr>
+            <th scope="row">1</th>
+            <td>
+                <button type="button" class="btn btn-light text-nowrap">
+                    允许用户注册
+                </button>
+            </td>
+            <td class="position-relative">
+                <div class="form-check form-switch position-absolute top-50 start-50 translate-middle">
+                    <label>
+                        <input class="td2 form-check-input"
+                               type="checkbox"
+                               name="register"
+                               role="switch" th:checked="${base.getRegister()}">
+                    </label>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">2</th>
+            <td>
+                <button type="button" class="btn btn-light text-nowrap">
+                    注册后自动激活
+                </button>
+            </td>
+            <td class="position-relative">
+                <div class="form-check form-switch position-absolute top-50 start-50 translate-middle">
+                    <label>
+                        <input class="td2 form-check-input"
+                               type="checkbox"
+                               name="activation"
+                               role="switch" th:checked="${base.getActivation()}">
+                    </label>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">3</th>
+            <td>
+                <button type="button" class="btn btn-light text-nowrap">
+                    下载模式
+                </button>
+            </td>
+            <td class="position-relative">
+                <div class="form-check form-switch position-absolute top-50 start-50 translate-middle">
+                    <label>
+                        <input class="td2 form-check-input"
+                               type="checkbox"
+                               name="download"
+                               role="switch" th:checked="${base.getDownload()}">
+                    </label>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">4</th>
+            <td>
+                <button type="button" class="btn btn-light text-nowrap">
+                    开启上传
+                </button>
+            </td>
+            <td class="position-relative">
+                <div class="form-check form-switch position-absolute top-50 start-50 translate-middle">
+                    <label>
+                        <input class="td2 form-check-input"
+                               type="checkbox"
+                               name="upload"
+                               role="switch" th:checked="${base.getUpload()}">
+                    </label>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">5</th>
+            <td>
+                <button type="button" class="btn btn-light text-nowrap">
+                    上传缓存文件夹
+                </button>
+            </td>
+            <td>
+                <button type="button" class="btn btn-primary text-nowrap" data-bs-toggle="modal"
+                        data-bs-target="#repositoryModal">
+                    设置
+                </button>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">6</th>
+            <td>
+                <button type="button" class="btn btn-light text-nowrap">
+                    背景图片文件夹
+                </button>
+            </td>
+            <td>
+                <button type="button" class="btn btn-primary text-nowrap" data-bs-toggle="modal"
+                        data-bs-target="#backgroundDirectoryModal">
+                    设置
+                </button>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">7</th>
+            <td>
+                <button type="button" class="btn btn-light text-nowrap">
+                    背景图片
+                </button>
+            </td>
+            <td>
+                <button type="button" class="btn btn-primary text-nowrap" data-bs-toggle="modal"
+                        data-bs-target="#backgroundModal">
+                    设置
+                </button>
+            </td>
+        </tr>
+        <tr>
+            <th scope="row">8</th>
+            <td>
+                <button type="button" class="btn btn-light text-nowrap">
+                    最大非活动间隔
+                </button>
+            </td>
+            <td>
+                <button type="button" class="btn btn-primary text-nowrap" data-bs-toggle="modal"
+                        data-bs-target="#timeoutModal">
+                    设置
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<!-- 缓存文件夹Modal -->
+<div class="modal fade" id="repositoryModal" tabindex="-1" aria-labelledby="repositoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="repositoryModalLabel">请输入新的缓存文件夹</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="repositoryForm" method="post" th:action="@{/admin/baseconfig}">
+                    <div class="mb-3">
+                        <label for="repository" class="col-form-label">复制你的目录，这样不容易出错。</label>
+                        <label id="label1" class="form-check-label  alert-danger" for="repository"></label><br>
+                        <label for="repository" class="col-form-label"
+                               th:text="'当前文件夹：'+${base.getRepository()}">当前文件夹：</label>
+                        <input type="text" id="repository" class="form-control" name="repository">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button id="repositoryBut" type="button" class="sub btn btn-primary">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 超时时间Modal -->
+<div class="modal fade" id="timeoutModal" tabindex="-1" aria-labelledby="timeoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="timeoutModalLabel">时间内未有任何操作将自动退出登录。</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="timeoutForm" method="post" th:action="@{/admin/baseconfig}">
+                    <div class="mb-3">
+                        <label for="timeout" class="col-form-label">单位分钟，最小0，最大800。0表示无限。</label>
+                        <label id="label3" class="form-check-label  alert-danger" for="timeout"></label><br>
+                        <label for="timeout" class="col-form-label"
+                               th:text="'当前文件夹：'+${base.getTimeout()}">当前时间：</label>
+                        <input type="text" id="timeout" class="form-control" name="timeout">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button id="timeoutBut" type="button" class="sub btn btn-primary">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 背景图片Modal -->
+<div class="modal fade" id="backgroundModal" tabindex="-1" aria-labelledby="backgroundModalLabel" aria-hidden="true"
+     data-bs-backdrop="false">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="backgroundModalLabel">
+                    点击图片预览&nbsp&nbsp&nbsp
+                    <button id="nothing" type="button" class="btn btn-outline-secondary btn-sm">不使用皮肤</button>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="background" th:if="${base.getBackgroundMd5().size()>0}">
+                    <li th:each="item:${base.getBackgroundMd5()}">
+                        <a href="JavaScript:void(0);" th:data-id="${item.key}">
+                            <img th:src="@{'/file/background/11/9/'+${item.key}+'/download'}" alt="" src="">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                <button id="background" type="button" class="btn btn-primary">保存才生效</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 背景图片文件夹Modal -->
+<div class="modal fade" id="backgroundDirectoryModal" tabindex="-1" aria-labelledby="backgroundDirectoryModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="backgroundDirectoryModalLabel">请输入新的背景图片文件夹</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="backgroundDirectoryForm" method="post" th:action="@{/admin/baseconfig}">
+                    <div class="mb-3">
+                        <label for="backgroundDirectory" class="col-form-label">复制你的目录，这样不容易出错。</label>
+                        <label id="label2" class="form-check-label  alert-danger" for="backgroundDirectory"></label><br>
+                        <label for="backgroundDirectory" class="col-form-label"
+                               th:text="'当前文件夹：'+${base.getBackgroundDirectory()}">当前文件夹：</label>
+                        <input type="text" id="backgroundDirectory" class="form-control" name="backgroundDirectory">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button id="backgroundDirectoryBut" type="button" class="btn btn-primary">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--授权控制-->
+<form id="modifyForm" class="invisible" th:action="@{/admin/baseconfig}" method="post">
+    <input type="hidden" name="_method" value="put">
+    <input id="wait" type="hidden">
+</form>
+<script>
+    $(function () {
+        const modify = function (modifyKey, modifyValue) {
+            $("#wait").attr("name", modifyKey).val(modifyValue);
+            $("#modifyForm").submit();
+        };
+        //background
+        let md5;
+        let choice = false;
+        $(".background li").on("click", "a", function () {
+            choice = true;
+            md5 = $(this).data("id");
+            $(".background li img").removeClass("border border-primary border-3");
+            $(this).children("img").addClass("border border-primary border-3");
+            const nothing = $("#nothing");
+            nothing.removeClass("btn-secondary");
+            nothing.addClass("btn-outline-secondary");
+            nothing.attr("disabled", false);
+            $("body").css('background-image', "url(/file/background/11/9/" + md5 + "/download)");
+        })
+        $("#nothing").click(function () {
+            md5 = "吴彦祖";
+            choice = true;
+            $(".background li img").removeClass("border border-info border-2");
+            const nothing = $("#nothing");
+            nothing.removeClass("btn-outline-secondary");
+            nothing.addClass("btn-secondary");
+            nothing.attr("disabled", true);
+            $("body").css('background-image', "url(/file/background/11/9/" + md5 + "/download)");
+        })
+        $("#background").click(function () {
+            $('#backgroundModal').modal('hide');
+            if (choice) {
+                modify("background", md5);
+            }
+        })
+        $("#repositoryBut").click(function () {
+            $('#repositoryModal').modal('hide');
+            let modifyValue = $("#repository").val()
+            if (modifyValue.length > 0) {
+                modify("repository", modifyValue);
+            }
+        })
+        $("#backgroundDirectoryBut").click(function () {
+            $('#backgroundDirectoryModal').modal('hide');
+            let modifyValue = $("#backgroundDirectory").val()
+            if (modifyValue.length > 0) {
+                modify("backgroundDirectory", modifyValue);
+            }
+        })
+        $("#timeoutBut").click(function () {
+            let modifyValue = $("#timeout").val()
+            if (0 <= modifyValue && modifyValue <= 800) {
+                console.log(222)
+                $('#timeoutModal').modal('hide');
+                modify("timeout", modifyValue);
+            } else {
+                console.log(123)
+                $("#label3").text("输入错误！")
+            }
+        })
+        //register activation download upload
+        $("td").on("click", ".td2", function () {
+            let flag = false;
+            const modifyKey = $(this).attr("name");
+            const modifyValue = $(this).is(':checked');
+            let data = {};
+            data["_method"] = "put";
+            data[modifyKey] = modifyValue;
+            console.log(data)
+            $.ajax({
+                    url: $("#modifyForm").attr("action"),
+                    type: 'POST',
+                    async: false,
+                    data: data,
+                    success: function () {
+                        //发送成功
+                        flag = true;
+                    }
+                }
+            )
+            if (!flag) {
+                //如果发送失败
+                modify(modifyKey, modifyValue);
+            }
+        })
+    })
+</script>
+</body>
+</html>

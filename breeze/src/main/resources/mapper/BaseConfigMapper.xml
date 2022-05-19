@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nhwb.breeze.mapper.BaseConfigMapper">
+
+    <resultMap id="BaseResultMap" type="com.nhwb.breeze.domain.BaseConfig">
+        <id property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="register" column="register" jdbcType="TINYINT"/>
+        <result property="activation" column="activation" jdbcType="TINYINT"/>
+        <result property="upload" column="upload" jdbcType="TINYINT"/>
+        <result property="download" column="download" jdbcType="TINYINT"/>
+        <result property="repository" column="repository" jdbcType="VARCHAR"/>
+        <result property="backgroundDirectory" column="background_directory" jdbcType="VARCHAR"/>
+        <result property="background" column="background" jdbcType="VARCHAR"/>
+        <result property="timeout" column="timeout" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        user_id,authorize,activation,
+        upload,download,repository,
+        background_directory,background
+    </sql>
+</mapper>

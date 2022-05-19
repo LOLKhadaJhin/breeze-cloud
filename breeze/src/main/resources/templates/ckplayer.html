@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="/static/js/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/ckplayer/css/ckplayer.css">
+    <script type="text/javascript" charset="utf-8" src="/static/ckplayer/js/ckplayer.js"></script>
+    <!--    <script type="text/javascript" src="/static/ckplayer/flv.js/flv.min.js"></script>-->
+    <!--    <script type="text/javascript" src="/static/ckplayer/hls.js/hls.min.js"></script>-->
+    <!--    <script type="text/javascript" src="/static/ckplayer/mpegts.js/mpegts.js"></script>-->
+    <title th:text="${videoName}">微风网盘</title>
+</head>
+
+<body>
+<div class="d1">
+    <div class="video" style="width: 600px;height: 400px;"></div>
+    <a id="app" th:href="@{${i}+'/download'}" style="width: 0;height: 0;display: none;"></a>
+    <!--    <a id="app" th:href="@{${videoUrl}}" th:text="${videoPlug}" style="width: 0;height: 0;display: none;"></a>-->
+</div>
+<script type="text/javascript">
+    var app = $("#app").attr("href")
+    // var plug1 = $("#app").text()
+    // console.log(app)
+    //定义一个变量：videoObject，用来做为视频初始化配置
+    var videoObject = {
+        container: '.video', //“#”代表容器的ID，“.”或“”代表容器的class
+        // plug: plug1,
+        video: app//视频地址
+    };
+    var player = new ckplayer(videoObject);//初始化播放器
+    (function () {
+        player.webFull();
+    })();
+    player.full(function (b) {
+        player.webFull()
+        // console.log(b)
+        // if (b) (
+        //     player.webFull()
+        // )
+    });
+</script>
+</body>
+
+</html>

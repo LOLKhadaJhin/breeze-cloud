@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>微风网盘</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" src="/static/js/jquery-3.6.0.min.js"></script>
+    <link type="text/css" href="/static/bootstrap5/css/bootstrap.min.css" rel="stylesheet">
+    <script type="text/javascript" src="/static/bootstrap5/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="/static/js/background.js"></script>
+    <style>
+        body {
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-position: center center;
+        }
+
+        h4 {
+            line-height: 3.5rem;
+            height: 3.5rem;
+            text-align: center;
+            color: white;
+            background-color: rgba(77, 162, 253, 0.75);
+            margin-bottom: 0;
+        }
+
+        h4 a {
+            text-decoration: none;
+            color: white;
+        }
+
+        .one {
+            width: 80%;
+            min-width: 888px;
+            height: 500px;
+            margin: auto;
+            filter: opacity(0.85);
+        }
+
+        .two {
+            height: 175px;
+            margin: auto;
+            filter: opacity(0.85);
+        }
+
+        .card {
+            width: 280px;
+        }
+
+        .one .card-body {
+            height: 160px;
+        }
+        .two .card-body {
+            height: 125px;
+        }
+    </style>
+</head>
+<body th:data-background="${background}">
+
+<h4>
+    <a th:href="@{/}">微风网盘</a>
+</h4>
+
+
+<div class="one position-relative">
+    <a th:href="@{/admin/base}">
+        <div class="card text-white bg-success mb-3 position-absolute top-50 start-0 translate-middle-y rounded rounded-3"
+             style="max-width: 18rem;">
+            <div class="card-header">基础配置</div>
+            <div class="card-body">
+                <h5 class="card-title">基础配置</h5>
+                <p class="card-text">
+                    1、上传模式<br>
+                    2、下载模式<br>
+                    3、懒得写......
+                </p>
+            </div>
+        </div>
+    </a>
+    <a th:href="@{/admin/authority}">
+        <div class="card text-dark bg-info mb-3 position-absolute top-50 start-50 translate-middle rounded rounded-3"
+             style="max-width: 18rem;">
+            <div class="card-header">权限</div>
+            <div class="card-body">
+                <h5 class="card-title">权限控制</h5>
+                <p class="card-text">
+                    1、权限设置<br>
+                    2、文件管理<br>
+                    3、懒得写......
+                </p>
+            </div>
+        </div>
+    </a>
+    <a th:href="@{/admin/users}">
+        <div class="card text-white bg-dark mb-3 position-absolute top-50 end-0 translate-middle-y rounded rounded-3"
+             style="max-width: 18rem;">
+            <div class="card-header">用户中心</div>
+            <div class="card-body">
+                <h5 class="card-title">用户管理</h5>
+                <p class="card-text">
+                    1、重新命名<br>
+                    2、重置密码<br>
+                    3、懒得写......
+                </p>
+            </div>
+        </div>
+    </a>
+</div>
+
+<div class="two position-relative">
+    <a th:href="@{/admin/base}">
+        <div class="card text-white bg-success mb-3 position-absolute top-50 start-50 translate-middle rounded rounded-3"
+             style="max-width: 18rem;">
+            <div class="card-header">基础配置</div>
+            <div class="card-body">
+                <h5 class="card-title">基础配置</h5>
+                <p class="card-text">
+                    1、上传模式<br>
+                    2、下载模式<br>
+                </p>
+            </div>
+        </div>
+    </a>
+</div>
+
+<div class="two position-relative">
+    <a th:href="@{/admin/authority}">
+        <div class="card text-dark bg-info mb-3 position-absolute top-50 start-50 translate-middle rounded rounded-3"
+             style="max-width: 18rem;">
+            <div class="card-header">权限</div>
+            <div class="card-body">
+                <h5 class="card-title">权限控制</h5>
+                <p class="card-text">
+                    1、权限设置<br>
+                    2、文件管理<br>
+                </p>
+            </div>
+        </div>
+    </a>
+</div>
+<div class="two position-relative">
+    <a th:href="@{/admin/users}">
+        <div class="card text-white bg-dark mb-3 position-absolute top-50 start-50 translate-middle rounded rounded-3"
+             style="max-width: 18rem;">
+            <div class="card-header">用户中心</div>
+            <div class="card-body">
+                <h5 class="card-title">用户管理</h5>
+                <p class="card-text">
+                    1、重新命名<br>
+                    2、重置密码<br>
+                </p>
+            </div>
+        </div>
+    </a>
+</div>
+<script>
+    $(function () {
+        (function () {
+            if ($(document.body).width() > 888) {
+                $(".one").show();
+                $(".two").hide();
+            } else {
+                $(".one").hide();
+                $(".two").show();
+            }
+        })();
+        $(window).resize(function () {
+            if ($(document.body).width() > 888) {
+                $(".one").show();
+                $(".two").hide();
+            } else {
+                $(".one").hide();
+                $(".two").show();
+            }
+        });
+    })
+</script>
+</body>
+
+
+</html>

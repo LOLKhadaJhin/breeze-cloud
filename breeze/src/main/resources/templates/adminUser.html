@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>微风网盘</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" src="/static/js/jquery-3.6.0.min.js"></script>
+    <link type="text/css" href="/static/bootstrap5/css/bootstrap.min.css" rel="stylesheet">
+    <script type="text/javascript" src="/static/bootstrap5/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="/static/js/background.js"></script>
+    <style>
+        body {
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-position: center center;
+        }
+        body>h4 {
+            line-height: 3.5rem;
+            height: 3.5rem;
+            text-align: center;
+            color: white;
+            background-color: rgba(32, 36, 40,0.7);
+            margin-bottom: 0;
+        }
+
+        body>h4 a {
+            text-decoration: none;
+            color: white;
+        }
+        div h3,div h4 {
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        div h4 button.btn {
+            filter: opacity(0.9);
+            line-height: 1.2;
+        }
+
+        tbody tr th {
+            line-height: 38px;
+        }
+
+        table {
+            text-align: center;
+            max-width: 800px;
+            margin: auto;
+        }
+
+        .column-6 {
+            width: 10%;
+        }
+
+        .column-20 {
+            width: 10%;
+        }
+
+        td button.btn-light {
+            min-width: 60%;
+            pointer-events: none;
+            filter: opacity(0.7);
+        }
+
+    </style>
+</head>
+<body th:data-background="${background}">
+<h4>
+    <a th:href="@{/}">微风网盘</a>
+</h4>
+
+<div>
+    <h3 th:text="'用户名：'+${user.getUsername()}">
+        用户名
+    </h3>
+    <h4 th:utext="'昵称：'+${user.getFullname()}+
+    '&nbsp;<button type=	&quot;button&quot; class=&quot;btn btn-outline-primary btn-sm&quot;data-bs-toggle=&quotmodal&quot data-bs-target=&quot#modifyModal&quot >改名</button>'">
+        昵称
+        <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal"
+                data-bs-target="#modifyModal">
+            改名
+        </button>
+    </h4>
+    <table class="table">
+        <thead>
+        <tr>
+            <th class="column-6 text-nowrap" scope="col">序号</th>
+            <th class="column-40" scope="col">权限名称</th>
+            <th class="column-20 text-nowrap" scope="col">授权</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr th:if="${permissions.size()>0}" th:each="item,count:${permissions}" th:data-id="${item.getId()}">
+            <th scope="row" th:text="${count.count}">1</th>
+            <td>
+                <button type="button" class="btn btn-light text-nowrap" th:text="${item.getDescription()}">
+                    Link
+                </button>
+            </td>
+            <td class="position-relative">
+                <div class="form-check form-switch position-absolute top-50 start-50 translate-middle">
+                    <label>
+                        <input class="td2 form-check-input"
+                               type="checkbox"
+                               name="upload"
+                               role="switch" th:checked="${item.getGrant()}">
+                    </label>
+                </div>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>
+
+
+<!-- 修改昵称Modal -->
+<div class="modal fade" id="modifyModal" tabindex="-1" aria-labelledby="modifyModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modifyModalLabel">请输入该用户新昵称</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="modifyForm" method="post" th:action="@{/admin/user}">
+                    <input type="hidden" name="_method" value="put">
+                    <input type="hidden" name="id" th:value="${user.getId()}">
+                    <div class="mb-3">
+                        <label for="fullname" class="col-form-label">支持中文、字母、数字、下划线</label>
+                        <label id="label2" class="form-check-label  alert-danger" for="fullname"></label>
+                        <input type="text" class="form-control" id="fullname" name="fullname">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button id="modifyDetermine" type="button" class="btn btn-primary">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--授权控制-->
+<form id="choiceForm" class="invisible" th:action="@{/admin/userPermission}" method="post">
+    <input type="hidden" name="_method" value="put">
+    <input id="userId" type="hidden" name="userId" th:value="${user.getId()}">
+    <input id="permissionId" type="hidden" name="permissionId">
+    <input id="authorize" type="hidden" name="authorize">
+</form>
+<script>
+    $(function () {
+        //授权控制
+        $("td").on("click", ".td2", function () {
+            let flag = false;
+            const permissionId = $($(this).parent().parent().parent().parent()).data("id");
+            const userId = $("#userId").val();
+            const authorize = $(this).is(':checked');
+            let form = $("#choiceForm");
+            console.log(form.attr("action"))
+            console.log(permissionId);
+            console.log(userId);
+            console.log(authorize);
+            console.log(flag);
+            $.ajax({
+                    url: form.attr("action"),
+                    type: 'POST',
+                    async: false,
+                    data: {
+                        '_method': "put",
+                        'userId': userId,
+                        'permissionId': permissionId,
+                        'authorize': authorize
+                    },
+                    success: function () {
+                        //发送成功
+                        flag = true;
+                    }
+                }
+            )
+            console.log(flag);
+            if (!flag) {
+                //如果发送失败
+                $("#permissionId").val(permissionId);
+                $("#authorize").val(authorize);
+                form.submit();
+            }
+        })
+
+
+        //修改权限名称
+        $("#modifyDetermine").click(function () {
+                const regular = /^[\u4E00-\u9FA5A-Za-z0-9_]{1,12}$/;
+                const fullname = $("#fullname").val();
+                const label = $("#label2");
+                console.log(fullname);
+                if (!fullname) {
+                    label.text("不能为空")
+                } else if (fullname.length > 12) {
+                    label.text("最多12字符")
+                } else if (regular.test(fullname)) {
+                    $("#modifyForm").submit();
+                } else {
+                    label.text("含有特殊字符")
+                }
+            }
+        )
+        $("#description").on('change', function () {
+            $("#label2").text("")
+        })
+    })
+</script>
+</body>
+</html>

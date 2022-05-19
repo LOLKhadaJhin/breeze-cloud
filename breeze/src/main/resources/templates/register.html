@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>微风网盘</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" src="/static/js/jquery-3.6.0.min.js"></script>
+    <link type="text/css" href="/static/bootstrap5/css/bootstrap.min.css" rel="stylesheet">
+    <script type="text/javascript" src="/static/bootstrap5/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="/static/js/background.js"></script>
+    <style>
+        body {
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-position: center center;
+        }
+        h3 {
+            text-align: center;
+        }
+
+        #navigation {
+            line-height: 40px;
+            background-color: rgba(77, 162, 253, 0.75);
+        }
+
+        #breeze {
+            color: white;
+            font-size: 30px;
+            margin-left: 6%;
+        }
+
+        .nav-link {
+            color: white;
+        }
+
+        .position-relative {
+            width: 100%;
+            height: 600px;
+
+        }
+
+        form {
+            max-width: 600px;
+            min-width: 360px;
+            height: 520px;
+            background-color: rgba(255, 255, 255, 0.7) !important;
+        }
+
+        input.form-control {
+            background-color: rgba(255, 255, 255, 0.2) !important;
+        }
+    </style>
+</head>
+<body th:data-background="${background}">
+<div id="navigation">
+    <a id="breeze" class="float-start nav-link" th:href="@{/}">微风网盘</a>
+    <ul class="nav justify-content-end">
+        <li class="nav-item">
+            <a class="nav-link active" aria-current="page" th:href="@{/login}">登录</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" target="_blank" th:href="@{'//'+${help}}">使用帮助</a>
+        </li>
+        <!--    <li class="nav-item">-->
+        <!--        <a class="nav-link disabled">Disabled</a>-->
+        <!--    </li>-->
+    </ul>
+</div>
+
+<div class="position-relative">
+    <form class="position-absolute top-50 start-50 translate-middle  shadow-lg p-3 mb-5  rounded rounded-3"
+          th:action="@{/user/save}" method="post">
+        <h3>欢迎注册</h3>
+        <div class="mb-3">
+            <label for="username" class="form-label">账户名</label>
+            <label id="label1" class="form-check-label  alert-danger" for="username"
+                   th:text="${errors.get('username')}"></label>
+            <input type="text" class="form-control" id="username" name="username"
+                   placeholder="长度6~18，只能包含字母、数字"
+                   th:value="${register.username}"
+                   required>
+        </div>
+        <div class="mb-3">
+            <label for="fullname" class="form-label">昵称</label>
+            <label id="label2" class="form-check-label  alert-danger" for="fullname"
+                   th:text="${errors.get('fullname')}"></label>
+            <input type="text" class="form-control" id="fullname" name="fullname"
+                   placeholder="长度3~12，只能包含中文、英文、数字"
+                   th:value="${register.fullname}"
+                   required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">密码</label>
+            <label id="label3" class="form-check-label  alert-danger" for="password"
+                   th:text="${errors.get('password')}"></label>
+            <input type="password" class="form-control" id="password" name="password"
+                   placeholder="长度6~18，只能包含字母、数字和下划线"
+                   th:value="${register.password}"
+                   required>
+        </div>
+        <div class="mb-3">
+            <label for="again" class="form-label">再次输入密码</label>
+            <label id="label4" class="form-check-label  alert-danger" for="again"
+                   th:text="${errors.get('again')}"></label>
+            <input type="password" class="form-control" id="again" name="again"
+                   th:value="${register.again}"
+                   required>
+        </div>
+        <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="keep" name="keep">
+            <label class="form-check-label" for="keep">遵纪守法</label>
+            <label id="label5" class="form-check-label  alert-danger" for="keep"
+                   th:text="${errors.get('keep')}"></label>
+        </div>
+        <div class="d-grid gap-2 col-6 mx-auto">
+            <button type="submit" class="btn btn-primary" disabled>注&nbsp&nbsp册</button>
+        </div>
+    </form>
+</div>
+<script>
+    $(function () {
+        //提交按钮
+        const sign = $($("button")[0]);
+        //正则
+        const regular1 = /^[a-zA-Z0-9]{6,18}$/;
+        const regular2 = /^[a-zA-Z0-9_]{6,18}$/;
+        const regular3 = /^[\u4E00-\u9FA5A-Za-z0-9]{3,12}$/;
+        $("#keep").on("click", function () {
+            sign.attr("disabled", !($(this).is(':checked')))
+        })
+        $(sign).click(function (event) {
+            let flag = true;
+            const username = $("#username").val();
+            const fullname = $("#fullname").val();
+            const password = $("#password").val();
+            const again = $("#again").val();
+            const url = $("#breeze").attr("href")
+            console.log(url)
+            if (!username) {
+                $("#label1").text("不能为空")
+                flag = false;
+            } else if (!regular1.test(username)) {
+                $("#label1").text("长度6~18，只能包含英文、数字")
+                flag = false;
+            } else {
+                $.ajax({
+                        // contentType: "application/x-www-form-urlencoded",
+                        // url: "http://" + window.location.host + "/user/username",
+                        url: "/user/username",
+                        type: 'POST',
+                        async: false,
+                        data: {
+                            'username': username
+                        },
+                        success: function (data) {
+                            console.log(data);
+                            if (data) {
+                                flag = false;
+                                $("#label1").text("该用户名已存在")
+                            }
+                            console.log(flag);
+                        }
+                    }
+                )
+            }
+            if (!fullname) {
+                $("#label2").text("不能为空")
+                flag = false;
+            } else if (!regular3.test(fullname)) {
+                $("#label2").text("长度3~12，只能包含中文、英文、数字")
+                flag = false;
+            } else {
+                $.ajax({
+                        // contentType: "application/x-www-form-urlencoded",
+                        // url: "http://" + window.location.host + "/user/fullname",
+                        url: "/user/fullname",
+                        type: 'POST',
+                        async: false,
+                        data: {
+                            'fullname': fullname
+                        },
+                        success: function (data) {
+                            console.log(data);
+                            if (data) {
+                                flag = false;
+                                $("#label2").text("该昵称已存在")
+                            }
+                            console.log(flag);
+                        }
+                    }
+                )
+            }
+            if (!password) {
+                $("#label3").text("不能为空")
+                flag = false;
+            } else if (!regular2.test(password)) {
+                $("#label3").text("长度6~18，只能包含英文、数字和下划线")
+                flag = false;
+            }
+            if (!again) {
+                $("#label4").text("不能为空")
+                flag = false;
+            } else if (password !== again) {
+                $("#label4").text("两次密码不一样")
+                flag = false;
+            }
+            if (!flag) {
+                event.preventDefault();
+            }
+        });
+        $("#username").on('change', function () {
+            $("#label1").text("")
+        })
+        $("#fullname").on('change', function () {
+            $("#label2").text("")
+        })
+        $("#password").on('change', function () {
+            $("#label3").text("")
+        })
+        $("#again").on('change', function () {
+            $("#label4").text("")
+        })
+    })
+</script>
+</body>
+</html>

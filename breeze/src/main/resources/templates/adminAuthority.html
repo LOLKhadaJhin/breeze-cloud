@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>微风网盘</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" src="/static/js/jquery-3.6.0.min.js"></script>
+    <link type="text/css" href="/static/bootstrap5/css/bootstrap.min.css" rel="stylesheet">
+    <script type="text/javascript" src="/static/bootstrap5/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="/static/js/background.js"></script>
+    <style>
+        body {
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-position: center center;
+        }
+
+        h4 {
+            line-height: 3.5rem;
+            height: 3.5rem;
+            text-align: center;
+            color: white;
+            background-color: rgba(13, 196, 232,0.7);
+            margin-bottom: 0;
+        }
+
+        h4 a {
+            text-decoration: none;
+            color: white;
+        }
+
+        h3 {
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        table {
+            text-align: center;
+        }
+        tbody tr th{
+            line-height: 38px;
+        }
+
+
+        .column-6 {
+            width: 6%;
+        }
+
+        .column-12 {
+            width: 12%;
+        }
+
+        .column-20 {
+            width: 20%;
+        }
+
+        #addModal {
+            height: auto;
+        }
+        .btn-outline-dark{
+            min-width: 30%;
+        }
+    </style>
+</head>
+<body th:data-background="${background}">
+<h4>
+    <a th:href="@{/}">微风网盘</a>
+</h4>
+<h3>权限设置</h3>
+<table class="table">
+    <thead>
+    <tr>
+        <th class="column-6 text-nowrap" scope="col">序号</th>
+        <th class="column-40 text-nowrap" scope="col">权限名称</th>
+        <th class="column-12 text-nowrap" scope="col">所有人</th>
+        <th class="column-12 text-nowrap" scope="col">激活用户</th>
+        <th class="column-20 text-nowrap" scope="col">删除操作</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <tr th:if="${permissions.size()>0}" th:each="item,count:${permissions}" th:data-id="${item.getId()}">
+        <th scope="row" th:text="${count.count}">1</th>
+        <td>
+            <a th:href="@{'/admin/permission/'+${item.getId()}}">
+                <button type="button" class="btn btn-outline-dark text-nowrap" th:text="${item.getDescription()}">Link</button>
+            </a>
+        </td>
+        <td class="position-relative">
+            <div class="form-check form-switch position-absolute top-50 start-50 translate-middle">
+                <label>
+                    <input class="td2 form-check-input"
+                           type="checkbox"
+                           role="switch" th:checked="${item.getOvert()}">
+                </label>
+            </div>
+        </td>
+        <td class="position-relative">
+            <div class="form-check form-switch position-absolute top-50 start-50 translate-middle">
+                <label>
+                    <input class="td3 form-check-input"
+                           type="checkbox"
+                           role="switch" th:checked="${item.getActivation()}">
+                </label>
+
+            </div>
+        </td>
+        <td>
+            <!-- Button trigger modal -->
+            <button type="button" class="td4 btn btn-primary btn-danger" data-bs-toggle="modal"
+                    data-bs-target="#deleteModal">
+                删除
+            </button>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="5">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
+                添加新的权限
+            </button>
+        </td>
+    </tr>
+    </tbody>
+
+</table>
+
+
+<!-- Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">确认提示</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                你确定删除该权限吗？
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button id="deleteDetermine" type="button" class="btn btn-primary">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 添加权限Modal -->
+<div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addModalLabel">请输入新权限名称</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addForm" method="post" th:action="@{/admin/permission}">
+                    <div class="mb-3">
+                        <label for="description" class="col-form-label">支持中文、字母、数字、下划线</label>
+                        <label id="label1" class="form-check-label  alert-danger" for="description"></label>
+                        <input type="text" class="form-control" id="description" name="description">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button id="addDetermine" type="button" class="btn btn-primary">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--授权控制-->
+<form id="choiceForm" class="invisible" th:action="@{/admin/permission}" method="post">
+    <input type="hidden" name="_method" value="put">
+    <input id="choice" type="checkbox" name="choice" checked>
+</form>
+<!--删除权限-->
+<form id="deleteForm" class="invisible" th:action="@{/admin/permission/}" method="post">
+    <input type="hidden" name="_method" value="delete">
+</form>
+<script>
+    $(function () {
+        var delete_id = -1;
+        const td = $("td");
+        //删除id
+        td.on("click", ".td4", function () {
+            delete_id = $($(this).parent().parent()).data("id");
+            console.log($(this).parent().parent());
+            console.log(delete_id);
+        })
+        //删除
+        $("#deleteDetermine").click(function () {
+            console.log(delete_id);
+            let form = $("#deleteForm")
+            // form.attr("action", "http://" + window.location.host + "/admin/permission/" + delete_id);
+            form.attr("action", form.attr("action") + delete_id);
+            form.submit();
+            $('#deleteModal').modal('hide');
+        })
+        let action;
+        let actionFlag = true;
+        //activation
+        td.on("click", ".td3", function (event) {
+            let flag = false;
+            const id = $($(this).parent().parent().parent().parent()).data("id");
+            const state = $(this).is(':checked');
+            let form = $("#choiceForm");
+            if (actionFlag) {
+                action = form.attr("action");
+                actionFlag = false
+            }
+            form.attr("action", action + "/activation/" + id);
+            console.log(form.attr("action"))
+            console.log(id);
+            console.log(state);
+            console.log(flag);
+            $.ajax({
+                    // contentType: "application/x-www-form-urlencoded",
+                    // url: "http://" + window.location.host + "/admin/permission/activation/" + id,
+                    url: form.attr("action"),
+                    type: 'POST',
+                    async: false,
+                    data: {
+                        '_method': "put",
+                        "choice": state
+                    },
+                    success: function () {
+                        //发送成功
+                        flag = true;
+                    }
+                }
+            )
+            console.log(flag);
+            if (!flag) {
+                //如果发送失败
+                $("#choice").attr("checked", state);
+                // form.attr("action", "http://" + window.location.host + "/admin/permission/activation/" + id);
+                form.submit();
+            }
+        })
+
+        //overt
+        td.on("click", ".td2", function (event) {
+            let flag = false;
+            const id = $($(this).parent().parent().parent().parent()).data("id");
+            const state = $(this).is(':checked');
+            let form = $("#choiceForm");
+            if (actionFlag) {
+                action = form.attr("action");
+                actionFlag = false
+            }
+            form.attr("action", action + "/overt/" + id);
+            console.log(form.attr("action"))
+            console.log(id);
+            console.log(state);
+            console.log(flag);
+            $.ajax({
+                    // contentType: "application/x-www-form-urlencoded",
+                    // url: "http://" + window.location.host + "/admin/permission/activation/" + id,
+                    url: form.attr("action"),
+                    type: 'POST',
+                    async: false,
+                    data: {
+                        '_method': "put",
+                        "choice": state
+                    },
+                    success: function () {
+                        //发送成功
+                        flag = true;
+                    }
+                }
+            )
+            console.log(flag);
+            if (!flag) {
+                //如果发送失败
+                $("#choice").attr("checked", state);
+                // form.attr("action", "http://" + window.location.host + "/admin/permission/activation/" + id);
+                form.submit();
+            }
+        })
+
+        //添加权限
+        $("#addDetermine").click(function () {
+                const regular = /^[\u4E00-\u9FA5A-Za-z0-9]{1,12}$/;
+                const description = $("#description").val();
+                const label = $("#label1");
+                console.log(description);
+                if (!description) {
+                    label.text("不能为空")
+                } else if (description.length > 12) {
+                    label.text("最多12字符")
+                } else if (regular.test(description)) {
+                    $("#addForm").submit();
+                } else {
+                    label.text("含有特殊字符")
+                }
+            }
+        )
+        $("#description").on('change', function () {
+            $("#label1").text("")
+        })
+    })
+</script>
+</body>
+</html>

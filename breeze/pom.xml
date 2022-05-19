@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.5.12</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>com.nhwb</groupId>
+    <artifactId>breeze</artifactId>
+    <version>1.0</version>
+    <name>breeze</name>
+    <description>breeze</description>
+    <properties>
+        <java.version>11</java.version>
+        <proguard-maven-plugin.version>2.5.3</proguard-maven-plugin.version>
+        <proguard.version>7.2.1</proguard.version>
+    </properties>
+    <dependencies>
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework.boot</groupId>-->
+        <!--            <artifactId>spring-boot-starter-security</artifactId>-->
+        <!--        </dependency>-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.thymeleaf.extras</groupId>
+            <artifactId>thymeleaf-extras-springsecurity5</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <artifactId>spring-security-crypto</artifactId>
+            <groupId>org.springframework.security</groupId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>3.5.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.11.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload -->
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.4</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>4.4.15</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.13</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!--proguard混淆插件-->
+            <!-- https://mvnrepository.com/artifact/com.github.wvengen/proguard-maven-plugin -->
+            <plugin>
+                <groupId>com.github.wvengen</groupId>
+                <artifactId>proguard-maven-plugin</artifactId>
+                <version>${proguard-maven-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <!--打包的时候开始混淆-->
+                        <phase>package</phase>
+                        <goals>
+                            <goal>proguard</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+                <configuration>
+                    <proguardVersion>${proguard.version}</proguardVersion>
+                    <injar>${project.build.finalName}.jar</injar>
+                    <!--输出的jar-->
+                    <outjar>${project.build.finalName}.jar</outjar>
+                    <!--是否混淆-->
+                    <obfuscate>true</obfuscate>
+                    <proguardInclude>${basedir}/proguard.cfg</proguardInclude>
+
+                    <options>
+                        <!--默认开启，不做收缩（删除注释、未被引用代码）-->
+                        <option>-dontshrink</option>
+                        <!--默认是开启的，这里关闭字节码级别的优化-->
+                        <option>-dontoptimize</option>
+                        <!--对于类成员的命名的混淆采取唯一策略-->
+                        <option>-useuniqueclassmembernames</option>
+                        <!--混淆时不生成大小写混合的类名，默认是可以大小写混合-->
+                        <option>-dontusemixedcaseclassnames</option>
+                        <!--混淆类名之后，对使用Class.forName('className')之类的地方进行相应替代-->
+                        <option>-adaptclassstrings</option>
+
+                        <!--对异常、注解信息在runtime予以保留，不然影响springboot启动-->
+                        <option>-keepattributes
+                            Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,*Annotation*,EnclosingMethod
+                        </option>
+
+                        <!--此选项将保存接口中的所有原始名称（不混淆）-->
+                        <option>-keepnames interface ** { *; }</option>
+                        <!--此选项将保存所有软件包中的所有原始接口文件（不进行混淆）-->
+                        <!--<option>-keep interface * extends * { *; }</option>-->
+
+                        <!--此选项将保留所有原始方法参数,controller如果参数也混淆会导致传参映射不上  -->
+                        <option>-keepparameternames</option>
+
+                        <!--保留枚举成员及方法-->
+                        <option>-keepclassmembers enum * { *; }</option>
+
+                        <!--不混淆所有类,保存原始定义的注释-->
+                        <!--<option>-keepclassmembers class * {
+                            @org.springframework.context.annotation.Bean *;
+                            @org.springframework.beans.factory.annotation.Autowired *;
+                            @org.springframework.beans.factory.annotation.Value *;
+                            @org.springframework.stereotype.Service *;
+                            @org.springframework.stereotype.Component *;
+                            }
+                        </option>-->
+
+                        <!--忽略warn消息-->
+                        <option>-ignorewarnings</option>
+                        <!--忽略note消息-->
+                        <option>-dontnote</option>
+                    </options>
+                    <!--java 11-->
+                    <libs>
+                        <lib>${java.home}/jmods/</lib>
+                    </libs>
+                    <!--java 8-->
+                    <!-- <libs>
+                         <lib>${java.home}/lib/rt.jar</lib>
+                         <lib>${java.home}/lib/jsse.jar</lib>
+                     </libs>-->
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.guardsquare</groupId>
+                        <artifactId>proguard-base</artifactId>
+                        <version>${proguard.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                    <!--jar可直接运行-->
+                    <executable>true</executable>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>微风网盘</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" src="/static/js/jquery-3.6.0.min.js"></script>
+    <link type="text/css" href="/static/bootstrap5/css/bootstrap.min.css" rel="stylesheet">
+    <script type="text/javascript" src="/static/bootstrap5/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="/static/js/background.js"></script>
+    <style>
+        body {
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-position: center center;
+        }
+        h4 {
+            line-height: 3.5rem;
+            height: 3.5rem;
+            text-align: center;
+            color: white;
+            background-color: rgba(32, 36, 40,0.7);
+            margin-bottom: 0;
+        }
+
+        h4 a {
+            text-decoration: none;
+            color: white;
+        }
+        h3 {
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+
+        table {
+            text-align: center;
+        }
+
+        tbody tr th {
+            line-height: 38px;
+        }
+
+
+        .column-6 {
+            width: 6%;
+        }
+
+        .column-12 {
+            width: 12%;
+        }
+
+        .btn-outline-success {
+            min-width: 40%;
+        }
+    </style>
+</head>
+<body th:data-background="${background}">
+<h4>
+    <a th:href="@{/}">微风网盘</a>
+</h4>
+<h3>用户中心</h3>
+<table class="table">
+    <thead>
+    <tr>
+        <th class="column-6 text-nowrap" scope="col">序号</th>
+        <th class="column-40 text-nowrap" scope="col">用户名</th>
+        <th class="column-12 text-nowrap" scope="col">激活</th>
+        <th class="column-12 text-nowrap" scope="col">上传</th>
+        <th class="column-12 text-nowrap" scope="col">遗忘密码</th>
+        <th class="column-12 text-nowrap" scope="col">删除操作</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <tr th:if="${users.size()>0}" th:each="item,count:${users}" data-id="root" th:data-id="${item.getId()}">
+        <th scope="row" th:text="${count.count}">1</th>
+        <td>
+            <a th:href="@{'/admin/user/'+${item.getId()}}">
+                <button type="button" class="btn btn-outline-success text-nowrap" th:text="${item.getUsername()}">Link
+                </button>
+            </a>
+        </td>
+        <td class="position-relative">
+            <div class="form-check form-switch  position-absolute top-50 start-50 translate-middle">
+                <label>
+                    <input class="td23 form-check-input"
+                           type="checkbox"
+                           name="activation"
+                           role="switch" th:checked="${item.getActivation()}">
+                </label>
+            </div>
+        </td>
+        <td class="position-relative">
+            <div class="form-check form-switch position-absolute top-50 start-50 translate-middle">
+                <label>
+                    <input class="td23 form-check-input"
+                           type="checkbox"
+                           name="upload"
+                           role="switch" th:checked="${item.getUpload()}">
+                </label>
+            </div>
+        </td>
+        <td>
+            <!-- Button trigger modal -->
+            <button type="button" class="td45 btn btn-primary btn-danger" data-bs-toggle="modal"
+                    data-bs-target="#modifyModal">
+                重置
+            </button>
+        </td>
+        <td>
+            <!-- Button trigger modal -->
+            <button type="button" class="td45 btn btn-primary btn-danger" data-bs-toggle="modal"
+                    data-bs-target="#deleteModal" th:disabled="${item.getUsername()}=='root'">
+                删除
+            </button>
+        </td>
+    </tr>
+    </tbody>
+
+</table>
+
+
+<!-- Modal -->
+<div class="modal fade" id="modifyModal" tabindex="-1" aria-labelledby="modifyModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modifyModalLabel">密码重置</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                如果上天能够给我一个重新来过的机会，我会对...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button id="modifyDetermine" type="button" class="btn btn-primary">般若波罗蜜</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">删除提示</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                段坤我吃定了!就算耶稣也留不住他！
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button id="deleteDetermine" type="button" class="btn btn-primary">我说的!</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--授权控制-->
+<form id="choiceForm" class="invisible" th:action="@{/admin/user}" method="post">
+    <input type="hidden" name="_method" value="put">
+    <input id="userId" type="hidden" name="id" value="">
+    <input id="choice" type="hidden">
+    <!--    <input id="choice" type="checkbox" name="choice" checked>-->
+</form>
+<!--删除权限-->
+<form id="deleteForm" class="invisible" th:action="@{/admin/user/}" method="post">
+    <input type="hidden" name="_method" value="delete">
+</form>
+<!--重置密码-->
+<form id="modifyForm" class="invisible" th:action="@{/admin/user/password/}" method="post">
+    <input type="hidden" name="_method" value="put">
+</form>
+<script>
+    $(function () {
+        let userid = -1;
+        const td = $("td");
+        //用户id
+        td.on("click", ".td45", function () {
+            userid = $($(this).parent().parent()).data("id");
+            console.log($(this).parent().parent());
+            console.log(userid);
+        })
+        //删除
+        $("#deleteDetermine").click(function () {
+            console.log(userid);
+            let form = $("#deleteForm")
+            // form.attr("action", "http://" + window.location.host + "/admin/permission/" + delete_id);
+            form.attr("action", form.attr("action") + userid);
+            form.submit();
+            $('#deleteModal').modal('hide');
+        })
+        //重置
+        $("#modifyDetermine").click(function () {
+            console.log(userid);
+            let form = $("#modifyForm")
+            // form.attr("action", "http://" + window.location.host + "/admin/permission/" + delete_id);
+            form.attr("action", form.attr("action") + userid);
+            form.submit();
+            $('#modifyModal').modal('hide');
+        })
+        //激活或上传
+        td.on("click", ".td23", function () {
+            let flag = false;
+            const id = $($(this).parent().parent().parent().parent()).data("id");
+            const choiceName = $(this).attr("name");
+            const state = $(this).is(':checked');
+            let form = $("#choiceForm");
+            let data = {};
+            data["_method"] = "put";
+            data["id"] = id;
+            data[choiceName] = state;
+            console.log(choiceName);
+            console.log(form.attr("action"));
+            console.log(id);
+            console.log(data);
+            console.log(flag);
+            $.ajax({
+                    url: form.attr("action"),
+                    type: 'POST',
+                    async: false,
+                    data: data,
+                    success: function () {
+                        //发送成功
+                        flag = true;
+                    }
+                }
+            )
+            console.log(flag);
+            if (!flag) {
+                //如果发送失败
+                $("#choice").attr("name", choiceName).val(state);
+                $("#userId").val(id);
+                form.submit();
+            }
+        })
+    })
+</script>
+</body>
+</html>

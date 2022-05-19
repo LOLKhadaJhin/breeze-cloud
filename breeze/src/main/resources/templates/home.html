@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>微风网盘</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" src="/static/js/jquery-3.6.0.min.js"></script>
+    <link type="text/css" href="/static/bootstrap5/css/bootstrap.min.css" rel="stylesheet">
+    <script type="text/javascript" src="/static/bootstrap5/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="/static/js/background.js"></script>
+    <style>
+        body {
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-position: center center;
+        }
+
+        .navigation, h2 {
+            line-height: 40px;
+            background-color: rgba(77, 162, 253, 0.75);
+        }
+        nav {
+            background-color: rgba(77, 162, 253, 0.5);
+        }
+
+        h2 {
+            height: 40px;
+            text-align: center;
+            color: white;
+            margin-bottom: 0;
+        }
+
+        .breeze {
+            color: white;
+            font-size: 30px;
+            margin-left: 6%;
+        }
+
+        .nav-link {
+            color: white;
+        }
+
+        .active {
+            color: #212529;
+        }
+        .list-group-item {
+            background: rgba(255, 255, 255, .3);
+        }
+    </style>
+</head>
+<body th:data-background="${background}">
+<div id="big" class="navigation">
+    <a class="breeze float-start nav-link" th:href="@{/}">微风网盘</a>
+    <ul class="nav justify-content-end">
+        <li class="nav-item">
+            <a class="nav-link active disabled" aria-current="page"  th:text="${text}"></a>
+        </li>
+        <li th:if="!${user}" class="nav-item">
+            <a class="nav-link" th:href="@{/login}">请先登录</a>
+        </li>
+        <li th:if="!${user}" class="nav-item">
+            <a class="nav-link" th:href="@{/register}">注册账号</a>
+        </li>
+        <li th:if="${user}=='root'" class="nav-item">
+            <a class="nav-link" th:href="@{/admin}">Admin</a>
+        </li>
+        <li th:if="${user}" class="nav-item">
+            <a class="nav-link" th:href="@{/user/modify}">修改密码</a>
+        </li>
+        <li th:if="${user}" class="nav-item">
+            <a class="nav-link" th:href="@{/logout}">退出登录</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" target="_blank" th:href="@{'//'+${help}}">使用帮助</a>
+        </li>
+    </ul>
+</div>
+
+<h2>
+    微风网盘
+</h2>
+<nav class="nav">
+    <a class="nav-link active disabled" aria-current="page" href="#" disabled th:text="${text}">Active</a>
+    <a th:if="!${user}" class="nav-link" th:href="@{/login}">请先登录</a>
+    <a th:if="!${user}" class="nav-link" th:href="@{/register}">注册账号</a>
+    <a th:if="${user}=='root'" class="nav-link" th:href="@{/admin}">Admin</a>
+    <a th:if="${user}" class="nav-link" th:href="@{/user/modify}">修改密码</a>
+    <a th:if="${user}" class="nav-link" th:href="@{/logout}">退出登录</a>
+    <a class="nav-link" target="_blank" th:href="@{'//'+${help}}">使用帮助</a>
+</nav>
+
+<div class="list-group">
+    <span th:each="item:${overt}">
+    <a class="list-group-item" th:href="@{'file/overt/'+${item.key}}" th:text="${item.value}">name</a>
+    </span>
+</div>
+<div class="list-group">
+    <span th:if="${activation}" th:each="item:${activation}">
+    <a class="list-group-item" th:href="@{'file/activation/'+${item.key}}" th:text="${item.value}">name</a>
+    </span>
+</div>
+<div class="list-group">
+    <span th:if="${grant}" th:each="item:${grant}">
+    <a class="list-group-item" th:href="@{'file/grant/'+${item.key}}" th:text="${item.value}">name</a>
+    </span>
+</div>
+
+<script>
+    $(function () {
+        (function () {
+            if ($(document.body).width()>800){
+                $("#big").show();
+                $("h2").hide();
+                $("nav").hide();
+            }else {
+                $("#big").hide();
+                $("h2").show();
+                $("nav").show();
+            }
+        })();
+        $(window).resize(function () {
+            if ($(document.body).width()>800){
+                $("#big").show();
+                $("h2").hide();
+                $("nav").hide();
+            }else {
+                $("#big").hide();
+                $("h2").show();
+                $("nav").show();
+            }
+        });
+    })
+</script>
+</body>
+</html>
